@@ -101,7 +101,7 @@ jQuery(
 		                function(i,option) 
 		                {									                    
 							option = $(option);												
-		                    if (option.hasClass("selected"))
+		                    if (option.attr('selected') || option.hasClass("selected"))
 		                    {																															
 		                        addItem (option.text(), option.val(), true);
 								option.attr("selected","selected");
