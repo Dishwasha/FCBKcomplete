@@ -89,7 +89,9 @@ jQuery(
 				   
 	               feed = $(document.createElement("ul"));
 	               feed.attr("id", elemid + "_feed");
-	               
+
+
+
 	               complete.prepend(feed);
 	               holder.after(complete);
 				   feed.css("width",complete.width());
@@ -288,10 +290,10 @@ jQuery(
 								}
 							}
 							
-	                        if (event.keyCode != 40 && event.keyCode != 38 && etext.length != 0) 
+	                        if (event.keyCode != 40 && event.keyCode != 38 && etext.length > 1)
 	                        {
 	                            counter = 0;									                            
-								
+
 	                            if (options.json_url) 
 	                            {
 	                                if (options.cache && json_cache) 
@@ -301,7 +303,8 @@ jQuery(
 	                                }
 	                                else 
 	                                {
-	                                    $.getJSON(options.json_url + "?tag=" + etext, null, 
+                                        $('li.pagination.noclick').remove();
+	                                    $.getJSON(options.json_url + "?tag=" + etext, null,
 	                                        function(data)
 	                                        {
 	                                            addMembers(etext, data);
@@ -327,7 +330,8 @@ jQuery(
 							input.focus();
 							complete.children(".default").show();
 						},1);
-					}						    
+					}
+                    feed.append(pagination);
 		        }
 	        	
 				function addMembers(etext, data)
@@ -341,7 +345,8 @@ jQuery(
 					}
 					
 					addTextItem(etext);
-					
+
+
 					if (data != null && data.length)
 					{
 						$.each(data, 
@@ -350,19 +355,25 @@ jQuery(
 								cache.push (
 									{
 										caption: val.caption,
-										value: val.value
+										value: val.value,
+                                        paginate: val.paginate
 									}
 								);
-								search_string += "" + (cache.length - 1) + ":" + val.caption + ";";
+                                if(val.caption != ''){
+                                    search_string += "" + (cache.length - 1) + ":" + val.caption + ";";
+                                }
+                                if(val.paginate != ''){
+                                    pagination = val.paginate;
+                                }
 							}
-						);	
+						);
 					}
 					
 					var maximum = options.maxshownitems<cache.length?options.maxshownitems:cache.length;
 					var filter = "i";
 					if (options.filter_case)
 					{
-						filter = ""; 
+						filter = "";
 					}
 					
 					var myregexp, match;
@@ -372,7 +383,8 @@ jQuery(
 					} catch(ex){};
 										
 					var content = '';
-					while (match != null && maximum > 0) 
+
+					while (match != null && maximum > 0)
 					{
 						var id = match[1];						
 						var object = cache[id];	
@@ -385,11 +397,13 @@ jQuery(
 							content += '<li rel="' + object.value + '">' + itemIllumination(object.caption, etext) + '</li>';
 							counter++;
 							maximum--;
-						}						
+						}
 						match = myregexp.exec(search_string);
 					}
+                    if(pagination != undefined) content += pagination;
 					feed.append(content);
-					
+
+
 					if (options.firstselected)
 					{
 					    focuson = feed.children("li:visible:first");
@@ -413,7 +427,7 @@ jQuery(
 	                    }
 	                }				
 				}
-				
+
 				function itemIllumination(text, etext)
 				{
 					if (options.filter_case) 
@@ -479,7 +493,9 @@ jQuery(
 	                        complete.hide();
 	                    }
 	                );
-	                
+                    feed.children("li.noclick").unbind("mousedown");
+	                bindPaginateEvents();
+
 	                maininput.unbind("keydown");
 	                maininput.keydown(
 	                    function(event)
@@ -565,7 +581,29 @@ jQuery(
 	                    }
 	                );
 		        }
-	        	
+
+                function bindPaginateEvents()
+                {
+	                $("li.pagination.noclick a").click(
+	                    function(e)
+	                    {
+                            var etext = xssPrevent($('.maininput').val());
+                            e.stopPropagation();
+                            e.preventDefault();
+	                        $.getJSON($(this).attr('href'), null,
+	                            function(data)
+	                            {
+	                                addMembers(etext, data);
+	                                json_cache = true;
+	                                bindEvents();
+	                            }
+	                        );
+
+                            return false;
+	                    }
+	                );
+
+                }
 		        function addTextItem(value)
 		        {					
 	                if (options.newel) 
@@ -642,6 +680,7 @@ jQuery(
 		        var feed       		= null;
 		        var complete   		= null;
 		        var counter    		= 0;
+                var pagination      = '';
 		        var cache      		= new Array();
 				var json_cache		= false;
 				var search_string	= "";
