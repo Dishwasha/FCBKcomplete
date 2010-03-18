@@ -395,7 +395,7 @@ jQuery(
 						}
 						else 
 						{
-							content += '<li rel="' + object.value + '">' + itemIllumination(object.caption, etext);
+							content += '<li class="outer" rel="' + object.value + '">' + itemIllumination(object.caption, etext);
               content += object.extra.content + '</li>';
 							counter++;
 							maximum--;
@@ -450,23 +450,35 @@ jQuery(
 		        function bindFeedEvent() 
 		        {		
 			        feed.children("li").mouseover(
-			            function()
+			            function(e)
 			            {
 				            feed.children("li").removeClass("auto-focus");
-	                        $(this).addClass("auto-focus");
-	                        focuson = $(this);
-	                    }
-	                );
+	                  $(this).addClass("auto-focus");
+	                  focuson = $(this);
+                    if($(this).hasClass('outer') && $(this).children("ul").css('display') != 'block'){
+                      toggleSlide($(this).children("ul"));
+                    }
+                  }
+
+	            );
 	        		
 			        feed.children("li").mouseout(
-			            function()
+			            function(e)
 			            {
 	                        $(this).removeClass("auto-focus");
 	                        focuson = null;
+
 	                    }
 	                );
+
 		        }
-	        	
+
+            function toggleSlide(obj)
+            {
+              $('.extra').slideUp('normal');
+              obj.slideDown('normal');
+            }
+
 		        function removeFeedEvent() 
 		        {       	
 			        feed.children("li").unbind("mouseover");	
@@ -489,6 +501,7 @@ jQuery(
 	                    function()
 	                    {
 	                        var option = $(this);
+                          option.children('.extra').remove();
 	                        addItem(option.text(),option.attr("rel"));
 	                        feed.hide();
 							browser_msie?browser_msie_frame.hide():'';
@@ -516,6 +529,7 @@ jQuery(
 	                        if (event.keyCode == 13 && checkFocusOn()) 
 	                        {
 	                            var option = focuson;
+                              option.children('.extra').remove();
 	                            addItem(option.text(), option.attr("rel"));
 	                            complete.hide();
 	                            event.preventDefault();
@@ -528,6 +542,7 @@ jQuery(
 								if (options.newel) 
 								{
 									var value = xssPrevent($(this).val());
+                  value.children('.extra').remove();
 									addItem(value, value);
 									complete.hide();
 									event.preventDefault();
