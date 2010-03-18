@@ -356,7 +356,8 @@ jQuery(
 									{
 										caption: val.caption,
 										value: val.value,
-                                        paginate: val.paginate
+                    paginate: val.paginate,
+                    extra: val.extra
 									}
 								);
                                 if(val.caption != ''){
@@ -394,13 +395,14 @@ jQuery(
 						}
 						else 
 						{
-							content += '<li rel="' + object.value + '">' + itemIllumination(object.caption, etext) + '</li>';
+							content += '<li rel="' + object.value + '">' + itemIllumination(object.caption, etext);
+              content += object.extra.content + '</li>';
 							counter++;
 							maximum--;
 						}
 						match = myregexp.exec(search_string);
 					}
-                    if(pagination != undefined) content += pagination;
+          if(pagination != undefined) content += pagination;
 					feed.append(content);
 
 
@@ -680,14 +682,15 @@ jQuery(
 		        var feed       		= null;
 		        var complete   		= null;
 		        var counter    		= 0;
-                var pagination      = '';
+            var pagination    = '';
+            var extra         = ''
 		        var cache      		= new Array();
-				var json_cache		= false;
-				var search_string	= "";
+				    var json_cache		= false;
+				    var search_string	= "";
 		        var focuson    		= null;
 	        	var deleting		= 0;
-				var browser_msie	= "\v"=="v";
-				var browser_msie_frame;
+				    var browser_msie	= "\v"=="v";
+				    var browser_msie_frame;
 				
 		        var element = $(this);
 		        var elemid = element.attr("id");

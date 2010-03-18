@@ -43,3 +43,13 @@ ul.holder li.bit-box-focus a.closebutton, ul.holder li.bit-box-focus a.closebutt
 
 .facebook-auto ul li.auto-focus.noclick { background: #eee; color: #666;}
 .facebook-auto ul li.auto-focus.noclick em { background: #ccc; color: #666}
+
+.facebook-auto ul ul{ display: none; margin: 0; padding: 0; overflow: auto; position:relative !important; z-index:9999}
+
+.facebook-auto ul li:hover ul{
+  display: block;
+}
+
+.facebook-auto ul li:hover ul li{
+  color: #666;
+}
