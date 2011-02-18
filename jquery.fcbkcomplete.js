@@ -128,6 +128,11 @@ jQuery(
 					addItem(title, value);
 				}
 	        	
+                function clearItems()
+                {
+                    $('.facebook-auto ul').empty();
+                }
+
 		        function addItem (title, value, preadded)
 		        {
 	                var li = document.createElement("li");
@@ -503,6 +508,7 @@ jQuery(
 	                        var option = $(this);
                           option.children('.extra').remove();
 	                        addItem(option.text(),option.attr("rel"));
+				clearItems();
 	                        feed.hide();
 							browser_msie?browser_msie_frame.hide():'';
 	                        complete.hide();
